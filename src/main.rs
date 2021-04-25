@@ -49,6 +49,8 @@ fn main() {
     println!("Mul (vec*float): {:?}", va*2.0); 
     println!("Mul (float*vec): {:?}", 2.0*va); 
     println!("lenth: {:?}", Vec3::new(1.0,1.0,1.0).length()); 
-
+    
+    println!("Mul (vec*vec): {:?}", Vec3::new(1.0,1.0,1.0) * Vec3::new(1.0, 1.0, 1.0));
+    println!("dot (vec*vec): {:?}", Vec3::dot(Vec3::new(1.0,1.0,1.0) , Vec3::new(1.0, 1.0, 1.0))); 
 
 }

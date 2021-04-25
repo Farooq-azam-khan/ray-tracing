@@ -22,11 +22,15 @@ impl Vec3 {
         self.e[2]
     }
     pub fn length_squared(&self) -> f64 {
-        self.e[0]*self.e[0] + self.e[1] * self.e[1] + self.e[2] * self.e[2]; 
+        self.e[0]*self.e[0] + self.e[1] * self.e[1] + self.e[2] * self.e[2]
     }
 
     pub fn length(&self) -> f64 {
         self.length_squared().sqrt()
+    }
+
+    pub fn dot(v1: Vec3, v2: Vec3) -> f64 {
+        v1.e[0] * v2.e[0] + v1.e[1] * v2.e[1] + v1.e[2] * v1.e[2]
     }
 }
 
@@ -54,6 +58,15 @@ impl ops::Mul<f64> for Vec3 {
     fn mul(self, t: f64) -> Vec3 {
         Vec3 {
             e: [self.e[0]*t, self.e[1]*t, self.e[2]*t]
+        }
+    }
+}
+
+impl ops::Mul<Vec3> for Vec3 {
+    type Output = Vec3; 
+    fn mul(self, rhs: Vec3) -> Vec3 {
+        Vec3 {
+            e: [self.e[0]*rhs.e[0], self.e[1]*rhs.e[1], self.e[2]*self.e[2]]
         }
     }
 }
