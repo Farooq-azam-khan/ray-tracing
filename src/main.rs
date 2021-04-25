@@ -1,5 +1,7 @@
 mod vec3; 
+mod ray; 
 use vec3::{Vec3}; 
+use ray::{Ray}; 
 
 fn draw_image() {
     // Image 
@@ -16,11 +18,11 @@ fn draw_image() {
             let g = (j as f64) / ((image_height -1) as f64); 
             let b = 0.25; 
 
-            let ir = (255.999 * r) as i64; 
-            let ig = (255.999 * g) as i64; 
-            let ib = (255.999 * b) as i64; 
+            let col = Vec3::new(r, g, b); 
+            write_color(col); 
 
-            println!("{} {} {}", ir, ig, ib); 
+
+            //println!("{} {} {}", ir, ig, ib); 
 
         }
     }
@@ -30,6 +32,7 @@ fn draw_image() {
 }
 
 fn main() {
+    /*
     let v1 = Vec3::new(1.0, 2.0, 3.0); 
     let v2 = Vec3::new(1.0, 2.0, 3.0); 
     let v3 = v1 + v2; 
@@ -52,5 +55,18 @@ fn main() {
     
     println!("Mul (vec*vec): {:?}", Vec3::new(1.0,1.0,1.0) * Vec3::new(1.0, 1.0, 1.0));
     println!("dot (vec*vec): {:?}", Vec3::dot(Vec3::new(1.0,1.0,1.0) , Vec3::new(1.0, 1.0, 1.0))); 
+    */
+    
+    let r = Ray::new(Vec3::new(1.0,1.0,1.0), Vec3::new(1.0, 0.0, 0.0)); 
+    println!("{:?}", r.at(0.0)); 
+    //draw_image();
 
+
+}
+
+fn write_color(pixel_color: Vec3) {
+    let ir = (255.999 * pixel_color.x()) as i64; 
+    let ig = (255.999 * pixel_color.y()) as i64; 
+    let ib = (255.999 * pixel_color.z()) as i64; 
+    println!("find ray point: {} {} {}", ir, ig, ib); 
 }
