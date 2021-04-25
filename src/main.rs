@@ -1,4 +1,7 @@
-fn main() {
+mod vec3; 
+use vec3::{Vec3}; 
+
+fn draw_image() {
     // Image 
     let image_width = 256; 
     let image_height = 256; 
@@ -6,14 +9,9 @@ fn main() {
     // Renger 
     println!("P3\n{} {}\n255", image_width, image_height); 
 
-    //let mut j = image_height - 1; 
-    //while j >= 0 {
     for j in (0..image_width).rev() {
-        //j -= 1; 
-        //let mut i = 0; 
-        //while i < image_width {
+        eprintln!("Scanlines remaining: {}", j); 
         for i in 0..image_height {
-            //i += 1; 
             let r = (i as f64) / ((image_width - 1) as f64); 
             let g = (j as f64) / ((image_height -1) as f64); 
             let b = 0.25; 
@@ -26,4 +24,20 @@ fn main() {
 
         }
     }
+    eprintln!("Done"); 
+
+
+}
+
+fn main() {
+    let v1 = Vec3::new(1.0, 2.0, 3.0); 
+    let v2 = Vec3::new(1.0, 2.0, 3.0); 
+    let v3 = v1 + v2; 
+    let v4 = v1 - v2; 
+    println!("v3: {:?}", v3); 
+    println!("v4: {:?}", v4); 
+
+    let mut vself = Vec3::new(-1.2, 3.0, 1.3); 
+    vself += Vec3::new(1.2, -3.0, -1.3); 
+    println!("AddAssign: {:?}", vself); 
 }
