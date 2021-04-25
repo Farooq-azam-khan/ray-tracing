@@ -32,6 +32,19 @@ impl Vec3 {
     pub fn dot(v1: Vec3, v2: Vec3) -> f64 {
         v1.e[0] * v2.e[0] + v1.e[1] * v2.e[1] + v1.e[2] * v1.e[2]
     }
+
+    pub fn unit_vector(v: Vec3) -> Vec3 {
+        v / v.length()
+    }
+
+    pub fn cross(u:Vec3, v:Vec3) -> Vec3 {
+        Vec3 {
+            e: [ u.e[1] * v.e[2] - u.e[2] * v.e[1], 
+                 u.e[2] * v.e[0] - u.e[0] * v.e[2], 
+                 u.e[0] * v.e[1] - u.e[1] * v.e[0]
+              ]
+        }
+    }
 }
 
 
@@ -77,6 +90,20 @@ impl ops::Mul<Vec3> for f64 {
         Vec3 {
             e: [rhs.e[0]*self, rhs.e[1]*self, rhs.e[2]*self]
         }
+    }
+}
+
+impl ops::Div<f64> for Vec3 {
+    type Output = Vec3; 
+    fn div(self, t: f64) -> Vec3 {
+        self * 1.0/t
+    }
+}
+
+impl ops::Div<Vec3> for f64 {
+    type Output = Vec3; 
+    fn div(self, v: Vec3) -> Vec3 {
+        v * 1.0/self
     }
 }
 
