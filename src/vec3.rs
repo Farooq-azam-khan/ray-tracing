@@ -34,7 +34,7 @@ impl Vec3 {
     }
 
     pub fn unit_vector(v: Vec3) -> Vec3 {
-        v / v.length()
+        v * (1.0 / v.length())
     }
 
     pub fn cross(u:Vec3, v:Vec3) -> Vec3 {
@@ -92,7 +92,7 @@ impl ops::Mul<Vec3> for f64 {
         }
     }
 }
-
+/*
 impl ops::Div<f64> for Vec3 {
     type Output = Vec3; 
     fn div(self, t: f64) -> Vec3 {
@@ -106,7 +106,7 @@ impl ops::Div<Vec3> for f64 {
         v * 1.0/self
     }
 }
-
+*/
 
 impl ops::MulAssign<f64> for Vec3 {
     fn mul_assign(&mut self, t: f64) {
