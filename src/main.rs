@@ -48,6 +48,7 @@ fn main() {
     let va = Vec3::new(1.0, 2.0, 3.0); 
     println!("Mul (vec*float): {:?}", va*2.0); 
     println!("Mul (float*vec): {:?}", 2.0*va); 
+    println!("lenth: {:?}", Vec3::new(1.0,1.0,1.0).length()); 
 
 
 }
