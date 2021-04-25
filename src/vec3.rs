@@ -42,6 +42,33 @@ impl ops::AddAssign for Vec3 {
     }
 }
 
+impl ops::Mul<f64> for Vec3 {
+    type Output = Vec3; 
+    fn mul(self, t: f64) -> Vec3 {
+        Vec3 {
+            e: [self.e[0]*t, self.e[1]*t, self.e[2]*t]
+        }
+    }
+}
+
+impl ops::Mul<Vec3> for f64 {
+    type Output = Vec3; 
+    fn mul(self, rhs: Vec3) -> Vec3 {
+        Vec3 {
+            e: [rhs.e[0]*self, rhs.e[1]*self, rhs.e[2]*self]
+        }
+    }
+}
+
+
+impl ops::MulAssign<f64> for Vec3 {
+    fn mul_assign(&mut self, t: f64) {
+        *self = Self {
+            e: [self.e[0]*t, self.e[1]*t, self.e[2]*t]
+        }
+    }
+}
+
 impl ops::Sub<Vec3> for Vec3 {
     type Output = Vec3; 
     fn sub(self, rhs: Vec3) -> Vec3 {

@@ -40,4 +40,14 @@ fn main() {
     let mut vself = Vec3::new(-1.2, 3.0, 1.3); 
     vself += Vec3::new(1.2, -3.0, -1.3); 
     println!("AddAssign: {:?}", vself); 
+
+    let mut vself2 = Vec3::new(-1.0, -1.0, -2.0);
+    vself2 *= -1.0; 
+    println!("MulAssign: {:?}", vself2); 
+
+    let va = Vec3::new(1.0, 2.0, 3.0); 
+    println!("Mul (vec*float): {:?}", va*2.0); 
+    println!("Mul (float*vec): {:?}", 2.0*va); 
+
+
 }
