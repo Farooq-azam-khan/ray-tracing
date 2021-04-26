@@ -18,11 +18,7 @@ fn draw_image() {
     let origin = Vec3::new(0.0,0.0,0.0); 
     let horizontal = Vec3::new(viewport_width, 0.0,0.0); 
     let vertical = Vec3::new(0.0, viewport_height, 0.0); 
-    eprintln!("getting lower left"); 
-    let h2 = horizontal*(1.0/2.0); 
-    let v2 = vertical*(1.0/2.0); 
-    eprintln!("h/2: {:?}, v/2: {:?}", h2, v2); 
-    let lower_left_corner = origin - h2 - v2 - Vec3::new(0.0, 0.0, focal_length); 
+    let lower_left_corner = origin - horizontal/2.0 - vertical/2.0 - Vec3::new(0.0, 0.0, focal_length); 
 
 
     // Renger 
@@ -49,34 +45,7 @@ fn draw_image() {
 }
 
 fn main() {
-    /*
-    let v1 = Vec3::new(1.0, 2.0, 3.0); 
-    let v2 = Vec3::new(1.0, 2.0, 3.0); 
-    let v3 = v1 + v2; 
-    let v4 = v1 - v2; 
-    println!("v3: {:?}", v3); 
-    println!("v4: {:?}", v4); 
-
-    let mut vself = Vec3::new(-1.2, 3.0, 1.3); 
-    vself += Vec3::new(1.2, -3.0, -1.3); 
-    println!("AddAssign: {:?}", vself); 
-
-    let mut vself2 = Vec3::new(-1.0, -1.0, -2.0);
-    vself2 *= -1.0; 
-    println!("MulAssign: {:?}", vself2); 
-
-    let va = Vec3::new(1.0, 2.0, 3.0); 
-    println!("Mul (vec*float): {:?}", va*2.0); 
-    println!("Mul (float*vec): {:?}", 2.0*va); 
-    println!("lenth: {:?}", Vec3::new(1.0,1.0,1.0).length()); 
-    
-    println!("Mul (vec*vec): {:?}", Vec3::new(1.0,1.0,1.0) * Vec3::new(1.0, 1.0, 1.0));
-    println!("dot (vec*vec): {:?}", Vec3::dot(Vec3::new(1.0,1.0,1.0) , Vec3::new(1.0, 1.0, 1.0))); 
-    
-    let r = Ray::new(Vec3::new(1.0,1.0,1.0), Vec3::new(1.0, 0.0, 0.0)); 
-    println!("{:?}", r.at(0.0)); 
-    */
-
+  
     draw_image();
 
 
@@ -89,7 +58,13 @@ fn write_color(pixel_color: Vec3) {
     println!("{} {} {}", ir, ig, ib); 
 }
 
+/*
+    Linearly blends white and blue depending on the height y
+    y is scaled between -1 and 1
+    scale t such that t=0 is white and t=1 is blue 
+*/
 fn ray_color(r: Ray) -> Vec3 {
+    
     let unit_len = Vec3::unit_vector(r.direction);
     let t = 0.5 * (unit_len.y() + 1.0); 
 

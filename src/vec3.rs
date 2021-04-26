@@ -12,6 +12,17 @@ impl Vec3 {
     pub fn new(x:f64, y:f64, z:f64) -> Vec3 {
         Vec3 { e:  [x,y,z] }
     }
+    pub fn r(&self) -> f64 {
+        self.e[0]
+    }
+
+    pub fn g(&self) -> f64 {
+        self.e[1]
+    }
+
+    pub fn b(&self) -> f64 {
+        self.e[2]
+    }
     pub fn x(&self) -> f64 {
         self.e[0]
     }
@@ -92,21 +103,21 @@ impl ops::Mul<Vec3> for f64 {
         }
     }
 }
-/*
+
 impl ops::Div<f64> for Vec3 {
     type Output = Vec3; 
     fn div(self, t: f64) -> Vec3 {
-        self * 1.0/t
+        self * (1.0/t)// brackets matter (got sent into infinite loop)
     }
 }
 
 impl ops::Div<Vec3> for f64 {
     type Output = Vec3; 
     fn div(self, v: Vec3) -> Vec3 {
-        v * 1.0/self
+        v * (1.0/self) // brackets matter (got sent into infinite loop)
     }
 }
-*/
+
 
 impl ops::MulAssign<f64> for Vec3 {
     fn mul_assign(&mut self, t: f64) {
