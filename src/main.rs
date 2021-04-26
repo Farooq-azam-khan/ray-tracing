@@ -63,11 +63,14 @@ fn write_color(pixel_color: Vec3) {
 */
 fn ray_color(r: Ray) -> Vec3 {
     let center_canvas = Vec3::new(0.0, 0.0, -1.0); // point
-    if hit_sphere(center_canvas, 0.5, r) {
-        return Vec3::new(1.0, 0.0, 0.0);
+    let mut t = hit_sphere(center_canvas, 0.5, r); 
+    if t > 0.0 {
+        let N = Vec3::unit_vector(r.at(t) - Vec3::new(0.0,0.0,-1.0)); 
+        return 0.5 * Vec3::new(N.r()+1.0, N.g()+1.0, N.b()+1.0)
     }
+    
     let unit_len = Vec3::unit_vector(r.direction);
-    let t = 0.5 * (unit_len.y() + 1.0); 
+    t = 0.5 * (unit_len.y() + 1.0); 
 
     let v1 = Vec3::new(1.0, 1.0, 1.0); 
     let v2 = Vec3::new(0.5, 0.7, 1.0); 
@@ -81,12 +84,14 @@ where P(t) = A+tb
 
 */
 
-fn hit_sphere(center: Vec3, radius: f64, r: Ray) -> bool {
+fn hit_sphere(center: Vec3, radius: f64, r: Ray) -> f64 {
     let oc: Vec3 = r.origin - center; 
     let a: f64 = Vec3::dot(r.direction, r.direction);
-    // eprintln!("{:?} * {:?} = {:?}",r.direction, r.direction, a);
     let b: f64 = 2.0 * Vec3::dot(oc, r.direction);
     let c: f64 = Vec3::dot(oc, oc) - radius*radius; 
     let discriminant: f64 = b*b - 4.0 * a * c; 
-    discriminant > 0.0
+    if discriminant < 0.0 {
+        return -1.0;
+    }
+    (-b - discriminant.sqrt()) / (2.0*a)
 }
