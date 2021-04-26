@@ -41,7 +41,7 @@ impl Vec3 {
     }
 
     pub fn dot(v1: Vec3, v2: Vec3) -> f64 {
-        v1.e[0] * v2.e[0] + v1.e[1] * v2.e[1] + v1.e[2] * v1.e[2]
+        v1.e[0] * v2.e[0] + v1.e[1] * v2.e[1] + v1.e[2] * v2.e[2]
     }
 
     pub fn unit_vector(v: Vec3) -> Vec3 {
@@ -133,5 +133,31 @@ impl ops::Sub<Vec3> for Vec3 {
         Vec3 {
             e: [self.e[0] - rhs.e[0], self.e[1] - rhs.e[1], self.e[2] - rhs.e[2]]
         }
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*; 
+    #[test]
+    fn dot_basic() {
+        let v1 = Vec3::new(1.0, 2.0, 3.0);
+        assert_eq!(Vec3::dot(v1, v1), 14.0);
+    }
+    #[test]
+    fn sphere() {
+
+    let oc: Vec3 = Vec3::new(0.0,0.0,0.0) - Vec3::new(0.0,0.0,-1.0); 
+    assert_eq!(oc.e[2], 1.0);
+    let dir = Vec3::new(0.0, 0.0, -1.0); 
+    let radius = 0.5; 
+    let a: f64 = Vec3::dot(dir, dir);
+    assert_eq!(a, 1.0); 
+    let b: f64 = 2.0 * Vec3::dot(oc, dir);
+    let c: f64 = Vec3::dot(oc, oc) - radius*radius; 
+    let discriminant: f64 = b*b - 4.0 * a * c; 
+    assert_eq!(discriminant > 0.0, true); 
+
     }
 }
