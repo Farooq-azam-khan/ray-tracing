@@ -65,8 +65,8 @@ fn ray_color(r: Ray) -> Vec3 {
     let center_canvas = Vec3::new(0.0, 0.0, -1.0); // point
     let mut t = hit_sphere(center_canvas, 0.5, r); 
     if t > 0.0 {
-        let N = Vec3::unit_vector(r.at(t) - Vec3::new(0.0,0.0,-1.0)); 
-        return 0.5 * Vec3::new(N.r()+1.0, N.g()+1.0, N.b()+1.0)
+        let n = Vec3::unit_vector(r.at(t) - Vec3::new(0.0,0.0,-1.0)); 
+        return 0.5 * Vec3::new(n.r()+1.0, n.g()+1.0, n.b()+1.0)
     }
     
     let unit_len = Vec3::unit_vector(r.direction);
