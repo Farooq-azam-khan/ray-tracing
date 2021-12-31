@@ -1,3 +1,5 @@
+mod vec3;
+
 fn draw_image() {
     // Image
     let image_width: u32 = 256;
