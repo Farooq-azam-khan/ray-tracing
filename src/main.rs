@@ -1,8 +1,3 @@
-mod vec3; 
-mod ray; 
-use vec3::{Vec3}; 
-use ray::{Ray}; 
-
 fn draw_image() {
     // Image 
     let aspect_ratio = 16.0 / 9.0; 
@@ -48,50 +43,3 @@ fn main() {
 
 }
 
-
-fn write_color(pixel_color: Vec3) {
-    let ir = (255.999 * pixel_color.x()) as i64; 
-    let ig = (255.999 * pixel_color.y()) as i64; 
-    let ib = (255.999 * pixel_color.z()) as i64; 
-    println!("{} {} {}", ir, ig, ib); 
-}
-
-/*
-    Linearly blends white and blue depending on the height y
-    y is scaled between -1 and 1
-    scale t such that t=0 is white and t=1 is blue 
-*/
-fn ray_color(r: Ray) -> Vec3 {
-    let center_canvas = Vec3::new(0.0, 0.0, -1.0); // point
-    let mut t = hit_sphere(center_canvas, 0.5, r); 
-    if t > 0.0 {
-        let n = Vec3::unit_vector(r.at(t) - Vec3::new(0.0,0.0,-1.0)); 
-        return 0.5 * Vec3::new(n.r()+1.0, n.g()+1.0, n.b()+1.0)
-    }
-    
-    let unit_len = Vec3::unit_vector(r.direction);
-    t = 0.5 * (unit_len.y() + 1.0); 
-
-    let v1 = Vec3::new(1.0, 1.0, 1.0); 
-    let v2 = Vec3::new(0.5, 0.7, 1.0); 
-    return (1.0-t) * v1 + t * v2;
-}
-
-
-/*
-t^2 b dot b + 2t b dot (A-C) + (A-C) dot (A-C) - r^2 = 0
-where P(t) = A+tb
-
-*/
-
-fn hit_sphere(center: Vec3, radius: f64, r: Ray) -> f64 {
-    let oc: Vec3 = r.origin - center; 
-    let a: f64 = Vec3::dot(r.direction, r.direction);
-    let b: f64 = 2.0 * Vec3::dot(oc, r.direction);
-    let c: f64 = Vec3::dot(oc, oc) - radius*radius; 
-    let discriminant: f64 = b*b - 4.0 * a * c; 
-    if discriminant < 0.0 {
-        return -1.0;
-    }
-    (-b - discriminant.sqrt()) / (2.0*a)
-}
