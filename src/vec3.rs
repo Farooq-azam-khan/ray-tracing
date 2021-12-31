@@ -44,6 +44,10 @@ impl Vec3 {
     pub fn length_squared(&self) -> f64 {
         self.x() * self.x() + self.y() * self.y() + self.z() * self.z()
     }
+
+    pub fn dot(u: Vec3, v: Vec3) -> f64 {
+        u.x() * v.x() + u.y() * v.y() + u.z() * v.z()
+    }
 }
 
 impl ops::Neg for Vec3 {
@@ -104,14 +108,14 @@ impl ops::MulAssign<f64> for Vec3 {
         self.e[2] *= rhs;
     }
 }
-// impl ops::Mul<Vec3> for Vec3 {
-//     type Output = Vec3;
-//     fn mul(self, rhs: Vec3) -> Vec3 {
-//         Vec3 {
-//             e: [self.x() * rhs.x(), self.y() * rhs.y(), self.z() * self.z()],
-//         }
-//     }
-// }
+impl ops::Mul<Vec3> for Vec3 {
+    type Output = Vec3;
+    fn mul(self, rhs: Vec3) -> Vec3 {
+        Vec3 {
+            e: [self.x() * rhs.x(), self.y() * rhs.y(), self.z() * self.z()],
+        }
+    }
+}
 
 // Division
 impl ops::DivAssign<f64> for Vec3 {
@@ -137,18 +141,16 @@ impl ops::Div<f64> for Vec3 {
         )
     }
 }
-// impl ops::Sub<Vec3> for Vec3 {
-//     type Output = Vec3;
-//     fn sub(self, rhs: Vec3) -> Vec3 {
-//         Vec3 {
-//             e: [
-//                 self.e[0] - rhs.e[0],
-//                 self.e[1] - rhs.e[1],
-//                 self.e[2] - rhs.e[2],
-//             ],
-//         }
-//     }
-// }
+
+// Subtraction
+impl ops::Sub<Vec3> for Vec3 {
+    type Output = Vec3;
+    fn sub(self, rhs: Vec3) -> Vec3 {
+        Vec3 {
+            e: [self.x() - rhs.x(), self.y() - rhs.y(), self.z() - rhs.z()],
+        }
+    }
+}
 
 #[test]
 fn create_vec3_struct() {
@@ -204,7 +206,7 @@ fn test_inplace_addition() {
 }
 
 #[test]
-fn multiply_contant() {
+fn multiply_contant_and_return_new_vec3() {
     let v = Vec3::new(1.0, 2.0, 3.0);
     let vt = 2.0 * v;
     assert_eq!(vt.x(), 2.0);
@@ -237,7 +239,7 @@ fn test_inplace_division_by_constant() {
 }
 
 #[test]
-fn test_division_by_constant() {
+fn test_division_by_constant_and_return_new_vec() {
     let v = Vec3::new(1.0, 2.0, 3.0);
     let vd = v / 1.0;
     assert_eq!(vd.x(), 1.0);
@@ -259,4 +261,32 @@ fn test_length_squared() {
     let v = Vec3::new(3.0, 4.0, 5.0);
     let len_squared = v.length_squared();
     assert_eq!(len_squared, 50.0);
+}
+
+#[test]
+fn subtract_two_vectors() {
+    let v1 = Vec3::new(1.0, 1.0, 1.0);
+    let v2 = Vec3::new(1.0, 1.0, 1.0);
+    let v3 = v1 - v2;
+    assert_eq!(v3.x(), 0.0);
+    assert_eq!(v3.y(), 0.0);
+    assert_eq!(v3.z(), 0.0);
+}
+
+#[test]
+fn element_wise_multiplication_of_two_vectors() {
+    let v1 = Vec3::new(2.0, 4.0, 6.0);
+    let v2 = Vec3::new(2.0, 4.0, 6.0);
+    let v3 = v1 * v2;
+    assert_eq!(v3.x(), 4.0);
+    assert_eq!(v3.y(), 16.0);
+    assert_eq!(v3.z(), 36.0);
+}
+
+#[test]
+fn test_dot_procut_with_two_vecs_as_input() {
+    let v = Vec3::new(1.0, 2.0, 3.0);
+    let u = Vec3::new(1.0, 2.0, 3.0);
+    let d = Vec3::dot(v, u);
+    assert_eq!(d, 14.0);
 }
