@@ -27,7 +27,7 @@ i.e. 0 roots (ray does not interact with the sphere),
 use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3};
 
-pub fn hit_sphere(center: &Point3, radius: f64, r: &Ray) -> f64 {
+fn hit_sphere_old(center: &Point3, radius: f64, r: &Ray) -> f64 {
     // t^2b dot b + 2tb dot (A-C) + (A-C) dot (A-C) - r^2 = 0 (eq 5)
     let oc: Vec3 = r.origin - *center; // A - C
     let a = Vec3::dot(r.direction, r.direction); // b dot b
@@ -38,5 +38,20 @@ pub fn hit_sphere(center: &Point3, radius: f64, r: &Ray) -> f64 {
         return -1.0;
     } else {
         return (-b - discriminant.sqrt()) / (2.0 * a);
+    }
+}
+
+pub fn hit_sphere(center: &Point3, radius: f64, r: &Ray) -> f64 {
+    // t^2b dot b + 2tb dot (A-C) + (A-C) dot (A-C) - r^2 = 0 (eq 5)
+    let oc: Vec3 = r.origin - *center; // A - C
+    let a = r.direction.length_squared(); // Vec3::dot(r.direction, r.direction); // b dot b
+    let half_b = Vec3::dot(oc, r.direction);
+    // let b = 2.0 * Vec3::dot(oc, r.direction); // 2*b dot (A-C)
+    let c = oc.length() - radius * radius; // Vec3::dot(oc, oc) - radius * radius; // (A-C) dot (A-C) - r^2
+    let discriminant = half_b * half_b - a * c;
+    if discriminant < 0.0 {
+        return -1.0;
+    } else {
+        return (-half_b - discriminant.sqrt()) / (2.0 * a);
     }
 }
