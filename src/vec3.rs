@@ -48,6 +48,13 @@ impl Vec3 {
     pub fn dot(u: Vec3, v: Vec3) -> f64 {
         u.x() * v.x() + u.y() * v.y() + u.z() * v.z()
     }
+
+    pub fn cross(u: Vec3, v: Vec3) -> Vec3 {
+        let x_comp = u.y() * v.z() - u.z() * v.y();
+        let y_comp = u.z() * v.x() - u.x() * v.z();
+        let z_comp = u.x() * v.y() - u.y() * v.x();
+        Vec3::new(x_comp, y_comp, z_comp)
+    }
 }
 
 impl ops::Neg for Vec3 {
@@ -289,4 +296,14 @@ fn test_dot_procut_with_two_vecs_as_input() {
     let u = Vec3::new(1.0, 2.0, 3.0);
     let d = Vec3::dot(v, u);
     assert_eq!(d, 14.0);
+}
+
+#[test]
+fn test_cross_product() {
+    let u = Vec3::new(4.0, -1.0, 3.0);
+    let v = Vec3::new(-2.0, 1.0, -2.0);
+    let cp = Vec3::cross(u, v);
+    assert_eq!(cp.x(), -1.0);
+    assert_eq!(cp.y(), 2.0);
+    assert_eq!(cp.z(), 2.0);
 }
