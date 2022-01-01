@@ -27,12 +27,16 @@ i.e. 0 roots (ray does not interact with the sphere),
 use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3};
 
-pub fn hit_sphere(center: &Point3, radius: f64, r: &Ray) -> bool {
+pub fn hit_sphere(center: &Point3, radius: f64, r: &Ray) -> f64 {
     // t^2b dot b + 2tb dot (A-C) + (A-C) dot (A-C) - r^2 = 0 (eq 5)
     let oc: Vec3 = r.origin - *center; // A - C
     let a = Vec3::dot(r.direction, r.direction); // b dot b
     let b = 2.0 * Vec3::dot(oc, r.direction); // 2*b dot (A-C)
     let c = Vec3::dot(oc, oc) - radius * radius; // (A-C) dot (A-C) - r^2
     let discriminant = b * b - 4.0 * a * c;
-    discriminant > 0.0
+    if discriminant < 0.0 {
+        return -1.0;
+    } else {
+        return (-b - discriminant.sqrt()) / (2.0 * a);
+    }
 }

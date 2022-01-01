@@ -12,12 +12,14 @@ fn ray_colour(r: Ray) -> Colour {
     let sphere_center: Point3 = Point3::new(0.0, 0.0, -1.0);
     let radius = 0.5;
     // check if ray hit the sphere
-    if hit_sphere(&sphere_center, radius, &r) {
-        return Colour::new(1.0, 0.0, 0.0);
+    let mut t = hit_sphere(&sphere_center, radius, &r);
+    if t > 0.0 {
+        let normal: Vec3 = Vec3::unit_vector(r.at(t) - Vec3::new(0.0, 0.0, -1.0));
+        return 0.5 * Colour::new(normal.x() + 1.0, normal.y() + 1.0, normal.z() + 1.0);
     }
 
     let unit_dir = Colour::unit_vector(r.direction);
-    let t: f64 = 0.5 * (unit_dir.y() + 1.0);
+    t = 0.5 * (unit_dir.y() + 1.0);
     (1.0 - t) * Colour::new(1.0, 1.0, 1.0) + t * Colour::new(0.5, 0.7, 1.0)
 }
 
