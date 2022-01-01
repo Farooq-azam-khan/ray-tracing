@@ -24,6 +24,7 @@ i.e. 0 roots (ray does not interact with the sphere),
     or 2 roots (ray hits the sphere at 2 points)
 */
 
+// use crate::hittable::{HitRecord, HittablType, Hittable};
 use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3};
 
@@ -55,3 +56,44 @@ pub fn hit_sphere(center: &Point3, radius: f64, r: &Ray) -> f64 {
         return (-half_b - discriminant.sqrt()) / (2.0 * a);
     }
 }
+
+#[derive(Copy, Debug, Clone)]
+pub struct Sphere {
+    pub center: Point3,
+    pub radius: f64,
+}
+
+impl Sphere {
+    pub fn new(center: Vec3, radius: f64) -> Sphere {
+        Sphere { center, radius }
+    }
+}
+
+// impl Hitable for Sphere {
+//     fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
+//         let oc: Vec3 = r.origin - self.center;
+//         let a = r.direction.length_squared();
+//         let half_b = Vec3::dot(oc, r.direction);
+//         let c = oc.length() - self.radius * self.radius; // Vec3::dot(oc, oc) - radius * radius; // (A-C) dot (A-C) - r^2
+//         let discriminant = half_b * half_b - a * c;
+//         if discriminant < 0.0 {
+//             return None;
+//         } else {
+//             let sqrtd = discriminant.sqrt();
+//             let mut root = (-half_b - sqrtd) / a;
+//             if root < t_min || root > t_max {
+//                 root = (-half_b + sqrtd) / a;
+//                 if root < t_min || root > t_max {
+//                     return Some(HitRecord);
+//                 }
+//             }
+//             rec.t = root;
+//             rec.p = r.at(rec.t);
+
+//             let outward_normal: Vec3 = (rec.p - self.center) / self.radius;
+//             rec.set_face_normal(&r, outward_normal);
+//             rec.normal = (rec.p - self.center) / self.radius;
+//             return true;
+//         }
+//     }
+// }

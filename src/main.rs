@@ -1,25 +1,24 @@
 mod colour;
+mod hittable;
+mod hittable_list;
 mod ray;
 mod sphere;
+mod utils;
 mod vec3;
 
 use colour::write_colour;
+use hittable::{HitRecord, HittablType, Hittable};
+use hittable_list::HittableList;
 use ray::Ray;
-use sphere::hit_sphere;
+// use sphere::hit_sphere;
 use vec3::{Colour, Point3, Vec3};
 
-fn ray_colour(r: Ray) -> Colour {
-    let sphere_center: Point3 = Point3::new(0.0, 0.0, -1.0);
-    let radius = 0.5;
-    // check if ray hit the sphere
-    let mut t = hit_sphere(&sphere_center, radius, &r);
-    if t > 0.0 {
-        let normal: Vec3 = Vec3::unit_vector(r.at(t) - Vec3::new(0.0, 0.0, -1.0));
-        return 0.5 * Colour::new(normal.x() + 1.0, normal.y() + 1.0, normal.z() + 1.0);
+fn ray_colour(r: Ray, world: &HittableList) -> Colour {
+    if let Some(hit_record) = world.hit(&r, 0.0, f64::INFINITY) {
+        return 0.5 * (hit_record.normal + Colour::new(1.0, 1.0, 1.0));
     }
-
-    let unit_dir = Colour::unit_vector(r.direction);
-    t = 0.5 * (unit_dir.y() + 1.0);
+    let unit_dir = Vec3::unit_vector(r.direction);
+    let t = 0.5 * (unit_dir.y() + 1.0);
     (1.0 - t) * Colour::new(1.0, 1.0, 1.0) + t * Colour::new(0.5, 0.7, 1.0)
 }
 
@@ -29,6 +28,8 @@ fn draw_image() {
     let image_width: u32 = 400;
     let image_height: u32 = (image_width as f64 / aspect_ratio) as u32;
 
+    // World
+    let world = make_world();
     // Camera
     let viewport_height = 2.0;
     let viewport_width = aspect_ratio * viewport_height;
@@ -51,7 +52,7 @@ fn draw_image() {
                 origin,
                 lower_left_corner + u * horizontal + v * vertical - origin,
             );
-            let pixel_colour = ray_colour(r);
+            let pixel_colour = ray_colour(r, &world);
             write_colour(pixel_colour);
         }
     }
@@ -60,4 +61,26 @@ fn draw_image() {
 
 fn main() {
     draw_image();
+}
+
+fn make_world() -> HittableList {
+    let mut world: HittableList = HittableList::new();
+    let p = Point3::new(0.0, 0.0, -1.0);
+    let hr = HitRecord::new(
+        p,
+        Vec3::new(0.0, 0.0, 0.0),
+        0.0,
+        HittablType::Sphere(sphere::Sphere::new(p, 0.5)),
+    );
+    let p2 = Point3::new(0.0, -100.5, -1.0);
+    let hr2 = HitRecord::new(
+        p2,
+        Vec3::new(0.0, 0.0, 0.0),
+        0.0,
+        HittablType::Sphere(sphere::Sphere::new(p2, 100.0)),
+    );
+    world.add(hr2);
+    world.add(hr);
+
+    world
 }
