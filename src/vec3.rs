@@ -5,7 +5,7 @@ pub struct Vec3 {
     e: [f64; 3],
 }
 
-type Color = Vec3;
+pub type Colour = Vec3;
 type Point = Vec3;
 
 impl Vec3 {
@@ -54,6 +54,10 @@ impl Vec3 {
         let y_comp = u.z() * v.x() - u.x() * v.z();
         let z_comp = u.x() * v.y() - u.y() * v.x();
         Vec3::new(x_comp, y_comp, z_comp)
+    }
+
+    pub fn unit_vector(u: Vec3) -> Vec3 {
+        u / u.length()
     }
 }
 
@@ -169,7 +173,7 @@ fn create_vec3_struct() {
 
 #[test]
 fn create_color_struct() {
-    let c = Color::new(255.0, 250.0, 10.0);
+    let c = Colour::new(255.0, 250.0, 10.0);
     assert_eq!(c.r(), 255.0);
     assert_eq!(c.g(), 250.0);
     assert_eq!(c.b(), 10.0);
@@ -306,4 +310,11 @@ fn test_cross_product() {
     assert_eq!(cp.x(), -1.0);
     assert_eq!(cp.y(), 2.0);
     assert_eq!(cp.z(), 2.0);
+}
+
+#[test]
+fn test_unit_length() {
+    let u = Vec3::new(10.0, 2.0, 3.0);
+    let uv = Vec3::unit_vector(u);
+    assert!(uv.length() - 1.0 < 0.0001);
 }
