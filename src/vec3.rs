@@ -1,12 +1,12 @@
 use std::ops;
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Vec3 {
     e: [f64; 3],
 }
 
 pub type Colour = Vec3;
-type Point = Vec3;
+pub type Point3 = Vec3;
 
 impl Vec3 {
     pub fn new(x: f64, y: f64, z: f64) -> Vec3 {
@@ -181,7 +181,7 @@ fn create_color_struct() {
 
 #[test]
 fn create_point_struct() {
-    let p = Point::new(0.5, 1.0, 0.25);
+    let p = Point3::new(0.5, 1.0, 0.25);
     assert_eq!(p.x(), 0.5);
     assert_eq!(p.y(), 1.0);
     assert_eq!(p.z(), 0.25);
@@ -317,4 +317,11 @@ fn test_unit_length() {
     let u = Vec3::new(10.0, 2.0, 3.0);
     let uv = Vec3::unit_vector(u);
     assert!(uv.length() - 1.0 < 0.0001);
+}
+
+#[test]
+fn test_vec_equality() {
+    let u = Vec3::new(1.0, 1.0, 1.0);
+    let v = Vec3::new(1.0, 1.0, 1.0);
+    assert!(v == u);
 }
