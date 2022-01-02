@@ -53,17 +53,22 @@ fn draw_image() {
     println!("P3\n{} {}\n255", image_width, image_height);
     for j in (0..image_height).rev() {
         eprintln!("Scanlines Remaining: {}", j);
+
         for i in 0..image_width {
+            if j <= 176 {
+                eprintln!("j:{}, i:{}", j, i);
+            }
             let mut pixel_colour: Colour = Colour::new(0.0, 0.0, 0.0);
             for _s in 0..samples_per_pixel {
                 let u = (i as f64 + random_f64()) / (image_width as f64 - 1.0);
                 let v = (j as f64 + random_f64()) / (image_height as f64 - 1.0);
                 let r: Ray = cam.get_ray(u, v);
+                if j <= 176 {
+                    eprintln!("\t\t: i:{}", i);
+                }
                 pixel_colour = pixel_colour + ray_colour(r, &world, max_depth);
             }
-            if j == 176 {
-                eprintln!("\twriting colour:{}", i);
-            }
+
             write_colour(pixel_colour, samples_per_pixel);
         }
     }

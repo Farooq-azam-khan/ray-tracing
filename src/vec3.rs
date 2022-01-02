@@ -62,15 +62,19 @@ impl Vec3 {
     }
 
     pub fn random() -> Vec3 {
-        Vec3::new(random_f64(), random_f64(), random_f64())
+        Vec3 {
+            e: [random_f64(), random_f64(), random_f64()],
+        }
     }
 
     pub fn random_range(min: f64, max: f64) -> Vec3 {
-        Vec3::new(
-            random_f64_range(min, max),
-            random_f64_range(min, max),
-            random_f64_range(min, max),
-        )
+        Vec3 {
+            e: [
+                random_f64_range(min, max),
+                random_f64_range(min, max),
+                random_f64_range(min, max),
+            ],
+        }
     }
 }
 

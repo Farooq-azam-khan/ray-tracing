@@ -8,9 +8,9 @@ pub fn write_colour(colour: Colour, samples_per_pixel: u32) {
 
     // divide colour by number of samples
     let scale = 1.0 / samples_per_pixel as f64;
-    r *= scale;
-    g *= scale;
-    b *= scale;
+    r *= (scale * r).sqrt();
+    g *= (scale * g).sqrt();
+    b *= (scale * b).sqrt();
 
     let ir: u32 = (256.0 * clamp(r, 0.0, 0.999)) as u32;
     let ig: u32 = (256.0 * clamp(g, 0.0, 0.999)) as u32;
