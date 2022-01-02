@@ -18,6 +18,7 @@ use vec3::{random_in_unit_sphere, Colour, Point3, Vec3};
 
 fn ray_colour(r: Ray, world: &HittableList, depth: u32) -> Colour {
     if depth <= 0 {
+        eprintln!("Reached Max Depth");
         return Colour::new(0.0, 0.0, 0.0);
     }
     if let Some(hit_record) = world.hit(&r, 0.0, f64::INFINITY) {
@@ -59,6 +60,9 @@ fn draw_image() {
                 let v = (j as f64 + random_f64()) / (image_height as f64 - 1.0);
                 let r: Ray = cam.get_ray(u, v);
                 pixel_colour = pixel_colour + ray_colour(r, &world, max_depth);
+            }
+            if j == 176 {
+                eprintln!("\twriting colour:{}", i);
             }
             write_colour(pixel_colour, samples_per_pixel);
         }
