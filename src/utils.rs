@@ -15,8 +15,8 @@ pub fn random_f64() -> f64 {
     rng.gen()
 }
 
-pub fn random_f64_range(min: u32, max: u32) -> f64 {
-    min as f64 + random_f64() * (min as f64 - max as f64)
+pub fn random_f64_range(min: f64, max: f64) -> f64 {
+    min + random_f64() * (min - max)
 }
 
 pub fn clamp(x: f64, min: f64, max: f64) -> f64 {

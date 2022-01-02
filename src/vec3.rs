@@ -1,3 +1,4 @@
+use crate::utils::{random_f64, random_f64_range};
 use std::ops;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
@@ -58,6 +59,29 @@ impl Vec3 {
 
     pub fn unit_vector(u: Vec3) -> Vec3 {
         u / u.length()
+    }
+
+    pub fn random() -> Vec3 {
+        Vec3::new(random_f64(), random_f64(), random_f64())
+    }
+
+    pub fn random_range(min: f64, max: f64) -> Vec3 {
+        Vec3::new(
+            random_f64_range(min, max),
+            random_f64_range(min, max),
+            random_f64_range(min, max),
+        )
+    }
+}
+
+pub fn random_in_unit_sphere() -> Vec3 {
+    loop {
+        let p = Vec3::random_range(-1.0, 1.0);
+        if p.length_squared() >= 1.0 {
+            continue;
+        } else {
+            return p;
+        }
     }
 }
 
