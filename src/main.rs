@@ -43,7 +43,6 @@ fn draw_image() {
     let image_height: u32 = (image_width as f64 / aspect_ratio) as u32;
     let samples_per_pixel: u32 = 100;
     let max_depth = 50;
-    eprintln!("({}, {})", image_height, image_width); 
     // World
     let world = make_world();
 
@@ -56,21 +55,12 @@ fn draw_image() {
         eprintln!("Scanlines Remaining: {}", j);
 
         for i in 0..image_width {
-            if  j <= 177 { 
-                eprintln!("Image Width: {}", i); 
-            }
             let mut pixel_colour: Colour = Colour::default(); // new(0.0, 0.0, 0.0);
-            for s in 0..samples_per_pixel {
+            for _ in 0..samples_per_pixel {
                 let u = (i as f64 + random_f64()) / image_width as f64 ;
                 let v = (j as f64 + random_f64()) / image_height as f64;
                 let r = cam.get_ray(u, v);
-                if (j <= 177) && (i >= 192) {
-                    eprintln!("at sample {}", s); 
-                }
                 pixel_colour = pixel_colour + ray_colour(r, &world, max_depth);
-                if (j <= 177) && (i >= 192) && (s >= 25) {
-                    eprintln!("pixel_colour: {:?}", &pixel_colour); 
-                }
 
             }
             

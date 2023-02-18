@@ -1,5 +1,6 @@
 use crate::utils::{random_f64, random_f64_range};
 use std::ops;
+use rand::prelude::*;
 
 #[derive(Default, Debug, Copy, Clone, PartialEq)]
 pub struct Vec3 {
@@ -77,19 +78,31 @@ impl Vec3 {
         }
     }
 }
-
+/* 
 pub fn random_in_unit_sphere() -> Vec3 {
-    //Vec3::new(0.1, 0.1, 0.1)
      loop {
-         let p = Vec3::random_range(-1.0, 1.0);
+         let p = 2.0 * Vec3::random_range(-1.0, 1.0) - Vec3::new(1.0, 1.0, 1.0); 
          if p.length_squared() >= 1.0 {
              continue;
          } else {
              return p;
          }
      }
-}
+}*/
 
+pub fn random_in_unit_sphere() -> Vec3 {
+    let mut p = Vec3::default();
+    let mut rng = rand::thread_rng();
+
+    loop {
+        p = 2.0 * Vec3::new(rng.gen::<f64>(), rng.gen::<f64>(), rng.gen::<f64>())
+            - Vec3::new(1.0, 1.0, 1.0);
+
+        if p.length_squared() < 1.0 {
+            return p;
+        }
+    }
+}
 impl ops::Neg for Vec3 {
     type Output = Self;
     fn neg(self) -> Self::Output {
