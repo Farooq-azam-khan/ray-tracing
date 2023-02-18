@@ -7,13 +7,12 @@ mod sphere;
 mod utils;
 mod vec3;
 
-use colour::write_colour;
 use hittable::{HitRecord, Hittable};
 use hittable_list::HittableList;
 use ray::Ray;
 // use sphere::hit_sphere;
 use camera::Camera;
-use vec3::{random_in_unit_sphere, Colour, Point3, Vec3};
+use vec3::{random_unit_vector, Colour, Point3, Vec3};
 use rand::prelude::*;
 
 fn ray_colour(r:&Ray, world: &HittableList, depth: u32) -> Colour {
@@ -22,8 +21,8 @@ fn ray_colour(r:&Ray, world: &HittableList, depth: u32) -> Colour {
         return Colour::default(); 
     }
     let mut rec = HitRecord::default(); 
-    if world.hit(&r, 0.0, f64::MAX, &mut rec) {
-        let target: Point3 = rec.p + rec.normal + random_in_unit_sphere();
+    if world.hit(&r, 0.001, f64::MAX, &mut rec) {
+        let target: Point3 = rec.p + rec.normal + random_unit_vector();
         return 0.5
             * ray_colour(
                 &Ray::new(rec.p, target - rec.p),
