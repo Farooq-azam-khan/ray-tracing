@@ -38,9 +38,9 @@ fn ray_colour(r:&Ray, world: &HittableList, depth: u32) -> Colour {
 
 fn draw_image() {
     // Image
-    // let aspect_ratio: f64 = 16.0 / 9.0;
-    let image_width: u32 = 200;
-    let image_height: u32 = 100;//  (image_width as f64 / aspect_ratio) as u32;
+    let aspect_ratio: f64 = 16.0 / 9.0;
+    let image_width: u32 = 400;
+    let image_height: u32 = (image_width as f64 / aspect_ratio) as u32;
     let samples_per_pixel: u32 = 100;
     let max_depth = 50;
     // World
