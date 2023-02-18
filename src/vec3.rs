@@ -1,7 +1,7 @@
 use crate::utils::{random_f64, random_f64_range};
 use std::ops;
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Default, Debug, Copy, Clone, PartialEq)]
 pub struct Vec3 {
     e: [f64; 3],
 }
@@ -79,15 +79,15 @@ impl Vec3 {
 }
 
 pub fn random_in_unit_sphere() -> Vec3 {
-    Vec3::new(0.1, 0.1, 0.1)
-    // loop {
-    //     let p = Vec3::random_range(-1.0, 1.0);
-    //     if p.length_squared() >= 1.0 {
-    //         continue;
-    //     } else {
-    //         return p;
-    //     }
-    // }
+    //Vec3::new(0.1, 0.1, 0.1)
+     loop {
+         let p = Vec3::random_range(-1.0, 1.0);
+         if p.length_squared() >= 1.0 {
+             continue;
+         } else {
+             return p;
+         }
+     }
 }
 
 impl ops::Neg for Vec3 {

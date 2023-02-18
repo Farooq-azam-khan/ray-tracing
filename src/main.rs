@@ -8,7 +8,7 @@ mod utils;
 mod vec3;
 
 use colour::write_colour;
-use hittable::{HitRecord, HittablType, Hittable};
+use hittable::{HitRecord, Hittable};
 use hittable_list::HittableList;
 use ray::Ray;
 // use sphere::hit_sphere;
@@ -18,14 +18,15 @@ use vec3::{random_in_unit_sphere, Colour, Point3, Vec3};
 
 fn ray_colour(r: Ray, world: &HittableList, depth: u32) -> Colour {
     if depth <= 0 {
-        eprintln!("Reached Max Depth");
-        return Colour::new(0.0, 0.0, 0.0);
+        // eprintln!("Reached Max Depth");
+        return Colour::default(); 
     }
-    if let Some(hit_record) = world.hit(&r, 0.0, f64::INFINITY) {
-        let target: Point3 = hit_record.p + hit_record.normal + random_in_unit_sphere();
+    let mut rec = HitRecord::default(); 
+    if world.hit(&r, 0.0, f64::MAX, &mut rec) {
+        let target: Point3 = rec.p + rec.normal + random_in_unit_sphere();
         return 0.5
             * ray_colour(
-                Ray::new(hit_record.p, target - hit_record.p),
+                Ray::new(rec.p, target - rec.p),
                 &world,
                 depth - 1,
             );
@@ -42,7 +43,7 @@ fn draw_image() {
     let image_height: u32 = (image_width as f64 / aspect_ratio) as u32;
     let samples_per_pixel: u32 = 100;
     let max_depth = 50;
-
+    eprintln!("({}, {})", image_height, image_width); 
     // World
     let world = make_world();
 
@@ -55,20 +56,24 @@ fn draw_image() {
         eprintln!("Scanlines Remaining: {}", j);
 
         for i in 0..image_width {
-            if j <= 176 {
-                eprintln!("j:{}, i:{}", j, i);
+            if  j <= 177 { 
+                eprintln!("Image Width: {}", i); 
             }
-            let mut pixel_colour: Colour = Colour::new(0.0, 0.0, 0.0);
-            for _s in 0..samples_per_pixel {
-                let u = (i as f64 + random_f64()) / (image_width as f64 - 1.0);
-                let v = (j as f64 + random_f64()) / (image_height as f64 - 1.0);
-                let r: Ray = cam.get_ray(u, v);
-                if j <= 176 {
-                    eprintln!("\t\t: i:{}", i);
+            let mut pixel_colour: Colour = Colour::default(); // new(0.0, 0.0, 0.0);
+            for s in 0..samples_per_pixel {
+                let u = (i as f64 + random_f64()) / image_width as f64 ;
+                let v = (j as f64 + random_f64()) / image_height as f64;
+                let r = cam.get_ray(u, v);
+                if (j <= 177) && (i >= 192) {
+                    eprintln!("at sample {}", s); 
                 }
                 pixel_colour = pixel_colour + ray_colour(r, &world, max_depth);
-            }
+                if (j <= 177) && (i >= 192) && (s >= 25) {
+                    eprintln!("pixel_colour: {:?}", &pixel_colour); 
+                }
 
+            }
+            
             write_colour(pixel_colour, samples_per_pixel);
         }
     }
@@ -82,21 +87,9 @@ fn main() {
 fn make_world() -> HittableList {
     let mut world: HittableList = HittableList::new();
     let p = Point3::new(0.0, 0.0, -1.0);
-    let hr = HitRecord::new(
-        p,
-        Vec3::new(0.0, 0.0, 0.0),
-        0.0,
-        HittablType::Sphere(sphere::Sphere::new(p, 0.5)),
-    );
     let p2 = Point3::new(0.0, -100.5, -1.0);
-    let hr2 = HitRecord::new(
-        p2,
-        Vec3::new(0.0, 0.0, 0.0),
-        0.0,
-        HittablType::Sphere(sphere::Sphere::new(p2, 100.0)),
-    );
-    world.add(hr2);
-    world.add(hr);
+    world.add(Box::new(sphere::Sphere::new(p, 0.5)));
+    world.add(Box::new(sphere::Sphere::new(p2, 100.0)));
 
     world
 }

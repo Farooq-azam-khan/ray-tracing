@@ -1,19 +1,22 @@
 use crate::ray::Ray;
 use crate::sphere::Sphere;
 use crate::vec3::{Point3, Vec3};
-pub enum HittablType {
+
+pub enum HittableType {
     Sphere(Sphere),
 }
-
+#[derive(Default)]
 pub struct HitRecord {
     pub p: Point3,
     pub normal: Vec3,
     pub t: f64,
-    hittable_type: HittablType,
+//    hittable_type: HittableType,
 }
 
 pub trait Hittable {
-    fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord>;
+    fn hit(&self, r: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
+        false 
+    }
 }
 
 impl HitRecord {
@@ -25,54 +28,13 @@ impl HitRecord {
             -outward_normal
         }
     }
-    pub fn new(p: Point3, normal: Vec3, t: f64, hittable_type: HittablType) -> HitRecord {
+    pub fn new(p: Point3, normal: Vec3, t: f64, _hittable_type: HittableType) -> HitRecord {
         HitRecord {
             p,
             normal,
             t,
-            hittable_type,
+            //hittable_type,
         }
     }
 }
-
-impl Hittable for HitRecord {
-    fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
-        match self.hittable_type {
-            HittablType::Sphere(sp) => sp.hit(r, t_min, t_max),
-            _ => None,
-        }
-    }
-}
-
-impl Hittable for Sphere {
-    fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
-        let oc = r.origin - self.center;
-        let a = Vec3::dot(r.direction, r.direction);
-        let b = Vec3::dot(oc, r.direction);
-        let c = Vec3::dot(oc, oc) - self.radius * self.radius;
-
-        let discriminant = b * b - a * c;
-
-        if discriminant > 0.0 {
-            let mut temp = (-b - discriminant.sqrt()) / a;
-            if temp < t_max && temp > t_min {
-                return Some(HitRecord {
-                    t: temp,
-                    p: r.at(temp),
-                    normal: (r.at(temp) - self.center) / self.radius,
-                    hittable_type: HittablType::Sphere(*self),
-                });
-            }
-            temp = (-b + discriminant.sqrt()) / a;
-            if temp < t_max && temp > t_min {
-                return Some(HitRecord {
-                    t: temp,
-                    p: r.at(temp),
-                    normal: (r.at(temp) - self.center) / self.radius,
-                    hittable_type: HittablType::Sphere(*self),
-                });
-            }
-        }
-        None
-    }
-}
+ 

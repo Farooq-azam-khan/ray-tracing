@@ -24,38 +24,9 @@ i.e. 0 roots (ray does not interact with the sphere),
     or 2 roots (ray hits the sphere at 2 points)
 */
 
-// use crate::hittable::{HitRecord, HittablType, Hittable};
+ use crate::hittable::{HitRecord,  Hittable};
 use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3};
-
-fn hit_sphere_old(center: &Point3, radius: f64, r: &Ray) -> f64 {
-    // t^2b dot b + 2tb dot (A-C) + (A-C) dot (A-C) - r^2 = 0 (eq 5)
-    let oc: Vec3 = r.origin - *center; // A - C
-    let a = Vec3::dot(r.direction, r.direction); // b dot b
-    let b = 2.0 * Vec3::dot(oc, r.direction); // 2*b dot (A-C)
-    let c = Vec3::dot(oc, oc) - radius * radius; // (A-C) dot (A-C) - r^2
-    let discriminant = b * b - 4.0 * a * c;
-    if discriminant < 0.0 {
-        return -1.0;
-    } else {
-        return (-b - discriminant.sqrt()) / (2.0 * a);
-    }
-}
-
-pub fn hit_sphere(center: &Point3, radius: f64, r: &Ray) -> f64 {
-    // t^2b dot b + 2tb dot (A-C) + (A-C) dot (A-C) - r^2 = 0 (eq 5)
-    let oc: Vec3 = r.origin - *center; // A - C
-    let a = r.direction.length_squared(); // Vec3::dot(r.direction, r.direction); // b dot b
-    let half_b = Vec3::dot(oc, r.direction);
-    // let b = 2.0 * Vec3::dot(oc, r.direction); // 2*b dot (A-C)
-    let c = oc.length() - radius * radius; // Vec3::dot(oc, oc) - radius * radius; // (A-C) dot (A-C) - r^2
-    let discriminant = half_b * half_b - a * c;
-    if discriminant < 0.0 {
-        return -1.0;
-    } else {
-        return (-half_b - discriminant.sqrt()) / (2.0 * a);
-    }
-}
 
 #[derive(Copy, Debug, Clone)]
 pub struct Sphere {
@@ -64,7 +35,36 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub fn new(center: Vec3, radius: f64) -> Sphere {
+    pub fn new(center: Point3, radius: f64) -> Sphere {
         Sphere { center, radius }
+    }
+}
+
+impl Hittable for Sphere {
+    fn hit(&self, r: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
+        let oc = r.origin - self.center;
+        let a = Vec3::dot(r.direction, r.direction);
+        let b = Vec3::dot(oc, r.direction);
+        let c = Vec3::dot(oc, oc) - self.radius * self.radius;
+
+        let discriminant = b * b - a * c;
+
+        if discriminant > 0.0 {
+            let mut temp = (-b - discriminant.sqrt()) / a;
+            if temp < t_max && temp > t_min {
+                rec.t = temp; 
+                rec.p = r.at(rec.t); 
+                rec.normal = (rec.p - self.center) / self.radius; 
+                return true; 
+            }
+            temp = (-b + discriminant.sqrt()) / a;
+            if temp < t_max && temp > t_min {
+                rec.t = temp; 
+                rec.p = r.at(rec.t); 
+                rec.normal = (rec.p - self.center) / self.radius; 
+                return true; 
+            }
+        }
+       false  
     }
 }
