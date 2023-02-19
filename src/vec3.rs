@@ -82,6 +82,9 @@ impl Vec3 {
         let s = 1e-8; 
         self.x().abs() < s && self.y().abs() < s && self.z().abs() < s
     }
+    pub fn reflect(v: Vec3, n: Vec3) -> Vec3 {
+        v - 2.0*Vec3::dot(v,n)*n
+    }
 }
 /* 
 pub fn random_in_unit_sphere() -> Vec3 {
@@ -219,7 +222,7 @@ impl ops::Sub<Vec3> for Vec3 {
 fn test_if_vector_is_near_zero() {
     let v = Vec3::new(0.01, 0.003, 0.002); 
     assert!(v.near_zero() == false); 
-    assert!(Vec3::new(0.0,0.0,0.0).near_zero() == true);
+    assert!(Vec3::new(0.0,0.0,0.0) == true);
 }
 
 #[test]

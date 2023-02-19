@@ -6,29 +6,41 @@ mod ray;
 mod sphere;
 mod utils;
 mod vec3;
+mod material; 
 
-use hittable::{HitRecord, Hittable};
+use hittable::Hittable;
 use hittable_list::HittableList;
 use ray::Ray;
 // use sphere::hit_sphere;
 use camera::Camera;
-use vec3::{random_unit_vector, Colour, Point3, Vec3};
+use vec3::{ Colour, Vec3};
 use rand::prelude::*;
-
+use material::{Material, scatter}; 
+use sphere::Sphere; 
 fn ray_colour(r:&Ray, world: &HittableList, depth: u32) -> Colour {
     if depth <= 0 {
         // eprintln!("Reached Max Depth");
         return Colour::default(); 
     }
-    let mut rec = HitRecord::default(); 
-    if world.hit(&r, 0.001, f64::MAX, &mut rec) {
+    if let Some(rec) = world.hit(&r, 0.001, f64::MAX) {
+
+        let mut scattered: Ray = Ray::default(); 
+        let mut attenuation: Colour = Colour::default(); 
+
+        if scatter(&rec.material, r, &rec, &mut attenuation, &mut scattered ) {
+            return attenuation * ray_colour(&scattered, world, depth-1); 
+
+        }
+/*
         let target: Point3 = rec.p + rec.normal + random_unit_vector();
         return 0.5
             * ray_colour(
                 &Ray::new(rec.p, target - rec.p),
                 &world,
                 depth - 1,
+
             );
+*/
     }
     let unit_dir = Vec3::unit_vector(r.direction);
     let t = 0.5 * (unit_dir.y() + 1.0);
@@ -45,11 +57,29 @@ fn draw_image() {
     // World
     //let world = make_world();
     let mut world = HittableList::new();
-    let p = Point3::new(0.0, 0.0, -1.0);
-    let p2 = Point3::new(0.0, -100.5, -1.0);
-    world.add(Box::new(sphere::Sphere::new(p, 0.5)));
-    world.add(Box::new(sphere::Sphere::new(p2, 100.0)));
+    world.add(Box::new(Sphere::new(Vec3::new(0.0, -100.5, -1.0), 
+                                      100.0, 
+                                      Material::Lambertian {albedo: Vec3::new(0.8, 0.8, 0.0)}
+                                      )
+                       )
+              ); 
+    world.add(Box::new(Sphere::new(
+                Vec3::new(0.0, 0.0, -1.0),
+                0.5, 
+                Material::Lambertian {albedo: Vec3::new(0.7, 0.3, 0.3) } 
+                ))); 
 
+    world.add(Box::new(Sphere::new(
+                Vec3::new(-1.0, 0.0, -1.0), 
+                0.5, 
+                Material::Metal {albedo: Vec3::new(0.8, 0.8, 0.8)}
+                ))); 
+
+    world.add(Box::new(Sphere::new(
+                Vec3::new(1.0, 0.0, -1.0), 
+                0.5, 
+                Material::Metal {albedo: Vec3::new(0.8, 0.6, 0.2)}
+                ))); 
 
     // Camera
     let cam: Camera = Camera::new(); // Camera::new(aspect_ratio, 2.0, 1.0);
